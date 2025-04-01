@@ -1,0 +1,16 @@
+deploy:
+    runs-on: ubuntu-latest
+    needs: build  # 确保build作业成功后才进行部署
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install SSH key
+        uses: webfactory/ssh-agent@v0.5.2
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}  # 从仓库秘密中获取SSH私钥
+
+      - name: Deploy to server
+        run: |
+          ssh user@server_ip "cd /path/to/project && git pull && ./deploy.sh"  # 通过SSH连接到服务器并执行部署脚本
